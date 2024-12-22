@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="text-center">Dashboard</h3>
+
+                <!-- Display Profile Picture of the Logged-in User -->
+                <div class="text-center mb-4">
+                    <img src="{{ url_for('static', filename='uploads/' + current_user.profile_pic) if current_user.profile_pic else url_for('static', filename='uploads/default.png') }}" 
+                     alt="Profile Picture" class="img-thumbnail rounded-circle" width="150" height="150">
+                     
+
+                    <h4 class="mt-2">{{ current_user.username }}</h4>
+                </div>
+
+                <!-- Buttons for Edit Profile, Logout, and Add User -->
+                <div class="d-flex justify-content-center mt-4">
+                    {% if current_user.role == 'user' %}
+                    <a href="{{ url_for('logout') }}" class="btn btn-primary mt-auto">Log Out</a>
+                    {% endif %}
+                    <a href="{{ url_for('edit_profile') }}" class="btn btn-info mx-2">Edit Profile</a>
+                    {% if current_user.role == 'admin' %}
+                    <button class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#addUserModal">Add User</button>
+                    <a href="{{ url_for('logout') }}" class="btn btn-primary mt-auto">Log Out</a>
+                    {% endif %}
+                </div>
+
+                <!-- Admin Panel Section -->
+                {% if current_user.role == 'admin' %}
+                <div class="mt-4">
+                    <h4 class="text-center">Admin Panel</h4>
+                    <table class="table mt-3">
+                        <thead>
+                            <tr>
+                                <th>Profile Picture</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>
+                                    <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) if user.profile_pic else url_for('static', filename='uploads/default.png') }}" 
+                                     alt="Profile Picture" class="img-thumbnail rounded-circle" width="75" height="75">
+                               
+                                </td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.role }}</td>
+                                <td>
+                                    <a href="{{ url_for('delete_user', user_id=user.id) }}" 
+                                       class="btn btn-danger btn-sm">Delete</a>
+                                </td>
+                            </tr>
+                            
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+                {% endif %} 
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('add_user') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-control" id="role" name="role" required>
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Add User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+</div>
+
+{% endblock %}

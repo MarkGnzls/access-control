@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="text-center">Edit Profile</h3>
+    <form method="POST" enctype="multipart/form-data">
+        <!-- Show current profile picture -->
+        <div class="mb-3">
+            <label>Current Profile Picture:</label><br>
+            {% if current_user.profile_pic %}
+            <img src="{{ url_for('static', filename='uploads/' + current_user.profile_pic) }}" 
+             alt="Profile Picture" 
+             class="img-thumbnail" 
+             style="width: 100px; height: 100px;">
+            {% else %}
+<img src="{{ url_for('static', filename='uploads/default.png') }}" 
+     alt="Default Picture" 
+     class="img-thumbnail" 
+     style="width: 100px; height: 100px;">
+{% endif %}
+   
+        </div>
+
+        <!-- Username -->
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" class="form-control" id="username" name="username" value="{{ current_user.username }}">
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+            <label for="password" class="form-label">Password (leave blank to keep current password):</label>
+            <input type="password" class="form-control" id="password" name="password">
+        </div>
+
+        <!-- Profile Picture -->
+        <div class="mb-3">
+            <label for="profile_pic" class="form-label">Upload New Profile Picture:</label>
+            <input type="file" class="form-control" id="profile_pic" name="profile_pic">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
